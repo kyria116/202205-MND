@@ -1,0 +1,135 @@
+//don't forget jquery.mCustomScrollbar.css
+body.modal-open {
+    height: 100vh;
+    overflow-y: hidden;
+}
+#modalBg {
+    display: none;
+    position: fixed;
+    z-index: 99;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+.modal {
+    position: fixed;
+    width: 61.5%;
+    height: 85vh;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    padding: 67px 40px 0 82px;
+    background-color: #fefefe;
+    position: relative;
+    .closebtn {
+        cursor: pointer;
+        width: 96px;
+        height: 96px;
+        // border: 39px solid rgba(#f7e359, 0.5);
+        background: #f7e359;
+        display: inline-block;
+        vertical-align: middle;
+        position: absolute;
+        top: 0;
+        right: 0;
+        transition: 0.4s ease;
+        .close {
+            display: inline-block;
+            width: 42px;
+            height: 2px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -1px 0 0 -21px;
+            transform: rotate(45deg);
+            transform-origin: center;
+            background: black;
+            transition: 0.4s ease;
+            &::after {
+                content: "";
+                height: 42px;
+                width: 2px;
+                margin: -21px 0 0 -1px;
+                background: black;
+                left: 50%;
+                top: 50%;
+                position: absolute;
+                transition: 0.4s ease;
+            }
+        }
+        &:hover {
+            @media (min-width: 768px) {
+                background: #a2a199;
+                .close {
+                    background: white;
+                    &::after {
+                        background: white;
+                    }
+                }
+            }
+        }
+    }
+    .modal-title {
+        text-align: left;
+        margin-bottom: 55px;
+        @include font-size(pxToEm(26), pxToEm(36));
+        font-weight: 700;
+        @include line-height(1.19, 1);
+    }
+    .modal-content {
+        width: 100%;
+        height: 79%;
+        overflow: hidden;
+    }
+    // .modal-footer {
+    //     text-align: center;
+    // }
+}
+.mCSB_scrollTools .mCSB_draggerRail {
+    width: 4px;
+}
+.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar,
+.mCSB_scrollTools .mCSB_draggerRail {
+    border-radius: 0 !important;
+}
+@media (max-width: 991px) {
+    .modal {
+        width: 90%;
+        height: 88vh;
+        padding: 50px 15px 30px 30px;
+        .closebtn {
+            width: 56px;
+            height: 56px;
+            .close {
+                width: 36px;
+                margin: -1px 0 0 -18px;
+                &::after {
+                    height: 36px;
+                    margin: -18px 0 0 -1px;
+                }
+            }
+        }
+        .modal-title {
+            margin-bottom: 20px;
+        }
+        .modal-content {
+            height: 91%;
+            .editor_box {
+                font-size: pxToEm(14);
+                line-height: 1.42;
+            }
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            .btnwrap {
+                margin: 0 5px;
+            }
+        }
+    }
+}

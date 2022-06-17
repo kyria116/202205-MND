@@ -1,0 +1,16 @@
+.lang_tw {
+    .tw {
+        display: block;
+    }
+    .en {
+        display: none;
+    }
+}
+.lang_en {
+    .tw {
+        display: none;
+    }
+    .en {
+        display: block;
+    }
+}

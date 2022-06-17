@@ -1,0 +1,184 @@
+@import "base/mixin";
+@import "template/topmenu";
+@import "template/page";
+.search-section {
+    margin-top: 78px;
+    margin-bottom: 60px;
+    .search-box {
+        background-color: #eeeceb;
+        border-radius: 10px;
+        padding: 12px 20px;
+        display: flex;
+        width: fit-content;
+        margin-left: auto;
+    }
+    select {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: pxToEm(20);
+        font-weight: 700;
+        padding: 8px 25px 8px 10px;
+        background: url(../images/select.png) 90%/ 8px no-repeat;
+        background-color: #203e6e;
+        margin-right: 15px;
+        text-align: center;
+    }
+    option {
+        color: black;
+        background-color: #eeeceb;
+        border: none;
+        text-align: left;
+    }
+    form {
+        display: flex;
+        align-items: center;
+    }
+    input {
+        border-radius: 10px;
+        height: 100%;
+        border: none;
+        background-color: white;
+        padding: 0 10px;
+        font-size: pxToEm(20);
+        margin-right: 10px;
+    }
+    .btn {
+        width: 30px;
+        height: 30px;
+        background: url(../images/search_icon.png) center/contain no-repeat;
+        display: block;
+        position: relative;
+        &::after {
+            content: "";
+            width: 100%;
+            height: 100%;
+            background: url(../images/search_icon_hover.png) center/contain no-repeat;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            transition: 0.4s ease;
+        }
+        &:hover {
+            @media (min-width: 768px) {
+                &::after {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+.topmenu-section {
+    margin-bottom: 65px;
+}
+.lists-section {
+    margin-bottom: 65px;
+    .list-title,
+    .list-content {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        .l1 {
+            width: 12%;
+        }
+        .l2 {
+            width: 12%;
+        }
+        .l3 {
+            width: 35%;
+        }
+        .l4 {
+            width: 13%;
+        }
+        .l5 {
+            width: 14%;
+        }
+        .l6 {
+            width: 6%;
+        }
+        .l7 {
+            width: 8%;
+        }
+    }
+    .list-title {
+        font-size: pxToEm(20);
+        font-weight: 700;
+        color: #90928f;
+        border-bottom: 2px solid #ccc;
+        letter-spacing: 0.05em;
+        padding-bottom: 5px;
+    }
+    .list-content {
+        font-size: pxToEm(20);
+        font-weight: 500;
+        color: #343434;
+        border-bottom: 1px solid #ccc;
+        letter-spacing: 0.05em;
+        position: relative;
+        &::before {
+            content: "";
+            width: 101%;
+            height: 100%;
+            background-color: #eeeceb;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translate(-50%);
+            z-index: -1;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.4s ease;
+        }
+        &:hover {
+            @media (min-width: 768px) {
+                &::before {
+                    opacity: 1;
+                    visibility: visible;
+                }
+            }
+        }
+        li {
+            padding: 30px 0;
+        }
+        .l1 {
+            font-size: pxToEm(18);
+        }
+        .l2 {
+            font-size: pxToEm(16);
+            .tag {
+                padding: 7px 14.5px;
+                border-radius: 10px;
+                background-color: #203e6e;
+                color: white;
+                width: fit-content;
+            }
+        }
+        .l3 {
+            color: #203e6e;
+            padding-right: 3%;
+        }
+        .l7 {
+            background: url(../images/r_btn.png) 65%/10px no-repeat;
+        }
+        .l8 {
+            display: none;
+            width: 68%;
+            margin-right: 8%;
+            font-size: pxToEm(18);
+            color: #90928f;
+            font-weight: 400;
+            border-top: 4px solid white;
+            p {
+                @include clamp(3);
+            }
+        }
+    }
+}
+.page-section {
+    margin-bottom: 100px;
+}
