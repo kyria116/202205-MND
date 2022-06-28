@@ -144,3 +144,10 @@ sup {
     vertical-align: super;
     font-size: 12px;
 }
+
+.logo_new {
+    margin: 70px 0 -30px;
+    @media (max-width: 767px) {
+        margin: 40px 0 -50px;
+    }
+}

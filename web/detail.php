@@ -18,11 +18,11 @@ $btn_arr = array();
 $result = $link->query($query);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        foreach ($row as $k => $v) array_push($btn_arr,$v);
+        foreach ($row as $k => $v) array_push($btn_arr, $v);
     }
 }
-$current_id = array_search($id,$btn_arr);
-$prev_id = ($current_id - 1 < 0 ) ? "" :  $btn_arr[$current_id - 1];
+$current_id = array_search($id, $btn_arr);
+$prev_id = ($current_id - 1 < 0) ? "" :  $btn_arr[$current_id - 1];
 $next_id = ($current_id + 1 >= count($btn_arr)) ? "" :  $btn_arr[$current_id + 1];
 
 
@@ -37,6 +37,9 @@ include "quote/template/head.php";
 
 <body class="lang_tw">
     <main>
+        <div class="container">
+            <img src="dist/images/logo.jpg" class="logo_new" alt="行政規則">
+        </div>
         <section class="content-section">
             <div class="container-s">
                 <div class="table">
@@ -45,7 +48,7 @@ include "quote/template/head.php";
                             主題
                         </div>
                         <div class="table-content headline">
-                            <?php echo $data["n_title"];?>
+                            <?php echo $data["n_title"]; ?>
                         </div>
                     </div>
                     <div class="table-flex">
@@ -53,7 +56,7 @@ include "quote/template/head.php";
                             關鍵字
                         </div>
                         <div class="table-content">
-                            <?php echo $data["n_keyword"];?>
+                            <?php echo $data["n_keyword"]; ?>
                         </div>
                     </div>
                     <div class="table-flex">
@@ -61,7 +64,7 @@ include "quote/template/head.php";
                             類別
                         </div>
                         <div class="table-content">
-                            <?php echo $data["nc_title"];?>
+                            <?php echo $data["nc_title"]; ?>
                         </div>
                     </div>
                     <div class="table-flex">
@@ -69,7 +72,7 @@ include "quote/template/head.php";
                             地別區
                         </div>
                         <div class="table-content">
-                            <?php echo $data["n_area"];?>
+                            <?php echo $data["n_area"]; ?>
                         </div>
                     </div>
                     <div class="table-flex">
@@ -77,7 +80,7 @@ include "quote/template/head.php";
                             日期
                         </div>
                         <div class="table-content">
-                            <?php echo $data["n_date"];?>
+                            <?php echo $data["n_date"]; ?>
                         </div>
                     </div>
                     <div class="table-flex">
@@ -87,7 +90,7 @@ include "quote/template/head.php";
                         <div class="table-content">
                             <div class="editor_Content">
                                 <div class="editor_box">
-                                    <?php echo html_decode($data["n_stext"]);?>
+                                    <?php echo html_decode($data["n_stext"]); ?>
                                 </div>
                             </div>
                         </div>
@@ -99,7 +102,7 @@ include "quote/template/head.php";
                         <div class="table-content">
                             <div class="editor_Content">
                                 <div class="editor_box">
-                                    <?php echo html_decode($data["n_source"]);?>
+                                    <?php echo html_decode($data["n_source"]); ?>
                                 </div>
                             </div>
                         </div>
@@ -111,7 +114,7 @@ include "quote/template/head.php";
                         <div class="table-content">
                             <div class="editor_Content">
                                 <div class="editor_box">
-                                    <?php echo html_decode($data["n_suggest"]);?>
+                                    <?php echo html_decode($data["n_suggest"]); ?>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +122,7 @@ include "quote/template/head.php";
                 </div>
                 <div class="downladbtn">
                     <div class="producer">
-                        <?php echo $data["n_unit"]." ".$data["n_name"];?>
+                        <?php echo $data["n_unit"] . " " . $data["n_name"]; ?>
                     </div>
                     <a href="javascript:window.print();">
                         下載PDF <i></i>
@@ -128,17 +131,17 @@ include "quote/template/head.php";
                 <div class="btn-wrap">
                     <div class="prev">
                         <!-- 若無上一則刪除a保留prev -->
-                        <?php if($prev_id !=""){?>
-                        <a href="detail.php?id=<?php echo $prev_id;?>"><i></i>上一則</a>
-                        <?php }?>
+                        <?php if ($prev_id != "") { ?>
+                            <a href="detail.php?id=<?php echo $prev_id; ?>"><i></i>上一則</a>
+                        <?php } ?>
                     </div>
                     <div class="backbtn">
                         <a href="javascript:history.back();"><i></i>返回</a>
                     </div>
                     <div class="next">
-                        <?php if($next_id !=""){?>
-                        <a href="detail.php?id=<?php echo $next_id;?>">下一則<i></i></a>
-                        <?php }?>
+                        <?php if ($next_id != "") { ?>
+                            <a href="detail.php?id=<?php echo $next_id; ?>">下一則<i></i></a>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

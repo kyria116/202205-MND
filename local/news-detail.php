@@ -8,6 +8,9 @@
     // include "quote/template/nav.php";
     ?>
     <main>
+        <div class="container">
+            <img src="dist/images/logo.jpg" class="logo_new" alt="行政規則">
+        </div>
         <section class="content-section">
             <div class="container-s">
                 <!-- <div class="head-wrap">
