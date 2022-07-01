@@ -129,6 +129,11 @@
             <script src="../js/window_load.js"></script>
 			<script src="../js/cropper.min.js"></script>
             <script type="text/javascript">
+          		//加入備註
+            	$('.n_title input').after( "<span style='color:red;font-weight:blod;'>*請務必確實填寫「主題」</span>" );
+            	$('.n_unit input').after( "<span style='color:red;font-weight:blod;'>*請務必確實填寫「公告單位」</span>" );
+            	$('.n_name input').after( "<span style='color:red;font-weight:blod;'>*請務必確實填寫「公告人員」</span>" );
+            	//裁切圖片
 	            var cropper = [];
 		    	var img_w = [];
 		    	var img_h = [];

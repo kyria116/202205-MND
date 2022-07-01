@@ -37,7 +37,7 @@ include "quote/template/head.php";
 
 <body class="lang_tw">
     <main>
-        <div class="container">
+        <div class="container" style="text-align:center;">
             <img src="dist/images/logo.jpg" class="logo_new" alt="行政規則">
         </div>
         <section class="content-section">
