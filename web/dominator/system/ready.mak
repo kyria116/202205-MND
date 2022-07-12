@@ -1,5 +1,5 @@
 <?php 
-//	ini_set('session.cookie_secure','on');
+	ini_set('session.cookie_secure','on');
 	header("X-Frame-Options: SAMEORIGIN");
 	$project_title = "資安通報";//專案名稱	
 	
@@ -77,6 +77,7 @@
 		foreach($_GET as $k => $v){
 			if(is_array($v)) foreach($v as $vk => $vv) ${$k}[$vk] = filtration($vv,$link);
 			else $$k = filtration($v,$link);
+			echo $$k;
 		}	
 	}
 	if(count($_POST) > 0){

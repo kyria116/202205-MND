@@ -55,7 +55,9 @@ function sql_data($query, $link, $mode = 0, $idname = "", $classname = "")
 */
 function filtration($variable, $link)
 {
-	$variable = htmlentities(mysqli_real_escape_string($link, preg_replace('/[Jj][Aa][Vv][Aa][Ss][Cc][Rr][Ii][Pp][Tt]/', "", $variable)), ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+	$variable = htmlentities(mysqli_real_escape_string($link, preg_replace('/[^A-Za-z0-9_-]/', "", $variable)), ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+	$variable = str_replace("script", "", $variable);
+	$variable = str_replace("SCRIPT", "", $variable);
 	return $variable;
 }
 

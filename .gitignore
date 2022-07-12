@@ -4,6 +4,8 @@
 !**/web/dominator/index.php
 !**/web/dominator/system
 
+web/plug_in
+
 #dominator/paging
 web/dominator/paging/ckeditor
 web/dominator/paging/ckfinder

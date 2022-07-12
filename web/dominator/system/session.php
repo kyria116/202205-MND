@@ -1,5 +1,11 @@
 <?php
-	@session_start();//開啟session
+	// @session_start();//開啟session
+	session_start([
+		'use_only_cookies' => 1,
+		'cookie_lifetime' => 0,
+		'cookie_secure' => 1,
+		'cookie_httponly' => 1
+	]);
 	@header('Content-Type: text/html; charset=utf-8');//告知編碼
 	
 	$credentials = md5(date("Y").$project_name.date("md"));
@@ -8,4 +14,3 @@
 	}else{
 		$Authenticate = true;
 	}
-?>
