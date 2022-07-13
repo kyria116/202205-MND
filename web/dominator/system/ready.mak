@@ -65,7 +65,7 @@
 	
 	$link = db_conn($project_name);//建立資料庫連線
 	if(!$link){
-		echo "MAK-0001";
+		echo "Database connection failed.";  
 		exit;
 	}
 	
@@ -77,7 +77,6 @@
 		foreach($_GET as $k => $v){
 			if(is_array($v)) foreach($v as $vk => $vv) ${$k}[$vk] = filtration($vv,$link);
 			else $$k = filtration($v,$link);
-			echo $$k;
 		}	
 	}
 	if(count($_POST) > 0){

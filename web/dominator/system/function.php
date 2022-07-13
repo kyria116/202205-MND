@@ -9,14 +9,14 @@ FALSE：回傳false。
 $project_name = "mnd"; //資料庫&使用者名稱
 function db_conn($project_name)
 {
-	$host = "localhost";	//資料庫主機位置
-	$user = $project_name;	//資料庫的使用者帳號
-	$password = "mnd";	//資料庫的使用者密碼
-	$database = $project_name;	//資料庫名稱
+	// $host = "localhost";	//資料庫主機位置
+	// $user = $project_name;	//資料庫的使用者帳號
+	// $password = "mnd";	//資料庫的使用者密碼
+	// $database = $project_name;	//資料庫名稱
 
 	//連結資料庫後告知編碼
-	$link = @mysqli_connect($host, $user, $password, $database);
-	if ($link) $link->query("SET NAMES UTF8");
+	$link = @mysqli_connect("localhost", "mnd", "mnd", "mnd");
+	if ($link) mysqli_set_charset($link, "utf8");
 	else $link = false;
 	return $link;
 }
@@ -31,7 +31,10 @@ FALSE：回傳false。
 */
 function sql_data($query, $link, $mode = 0, $idname = "", $classname = "")
 {
-	$result = $link->query($query);
+	$stmt = $link->prepare($query);
+	$stmt->execute();
+	$result = $stmt->get_result();
+
 	if (mysqli_num_rows($result) == 0) $data = "";
 	elseif ($result) {
 		if ($mode == "0") {
@@ -55,9 +58,7 @@ function sql_data($query, $link, $mode = 0, $idname = "", $classname = "")
 */
 function filtration($variable, $link)
 {
-	$variable = htmlentities(mysqli_real_escape_string($link, preg_replace('/[^A-Za-z0-9_-]/', "", $variable)), ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
-	$variable = str_replace("script", "", $variable);
-	$variable = str_replace("SCRIPT", "", $variable);
+	$variable = htmlentities(mysqli_real_escape_string($link, preg_replace('/[Jj][Aa][Vv][Aa][Ss][Cc][Rr][Ii][Pp][Tt]/', "", $variable)), ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
 	return $variable;
 }
 

@@ -9,3 +9,5 @@ web/plug_in
 #dominator/paging
 web/dominator/paging/ckeditor
 web/dominator/paging/ckfinder
+web/dominator/paging/xckeditor
+web/dominator/paging/xckfinder
