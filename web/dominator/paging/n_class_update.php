@@ -1,9 +1,12 @@
 <?php
 include '../system/ready.mak';
+$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+$id = (int)$id;
 if (!isset($id) || !is_numeric($id)) {
 	header("location:" . $url_set . $_SESSION["dom_url"]); //導回頁面
 	exit();
 }
+
 $page_name = "n_class.php";
 include '../quote/head.php';
 ?>
@@ -17,7 +20,6 @@ include '../quote/head.php';
 <link rel="stylesheet" href="../css/unicorn.css" />
 <link rel="stylesheet" href="../css/file.css" />
 <link rel="stylesheet" href="../css/cropper.min.css">
-<link rel="stylesheet" href="../css/overwrite.css">
 <!--[if lt IE 9]>
 		<script type="text/javascript" src="../js/respond.min.js"></script>
 		<![endif]-->
@@ -38,8 +40,8 @@ include '../quote/head.php';
 		//資訊
 		$query = "SELECT * FROM `$db_name` WHERE $id_name = '$id'";
 		$data = sql_data($query, $link, 1);
-		$link->close();
-		$title_current = "分類《" . $data[$title_name] . "》";
+		mysqli_close($link);
+		$title_current = html_decode("分類《" . $data[$title_name] . "》");
 
 		// 1、型態：input、date、textarea、img、file、select
 		// 2、ALL：標題
@@ -55,7 +57,7 @@ include '../quote/head.php';
 		<div id="content">
 			<div id="content-header" class="mini">
 				<h1><?php echo $cms_lang[23][$language]; ?> <?php echo $title_current; ?></h1>
-				<?php include '../quote/stats.php'; ?>
+
 			</div>
 			<div id="breadcrumb">
 				<a href="index.php" title="<?php echo $cms_lang[9][$language]; ?>" class="tip-bottom"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>
@@ -73,7 +75,7 @@ include '../quote/head.php';
 								<h5><?php echo $cms_lang[23][$language]; ?> <?php echo $title_current; ?></h5>
 							</div>
 							<div class="widget-content nopadding">
-								<form action="../control/doupdate.php?db=<?php echo $db_name; ?>&id_name=<?php echo $id_name; ?>&id=<?php echo $id; ?>" method="post" class="form-horizontal" id="form_update" name="form_update" enctype="multipart/form-data">
+								<form action="../control/doupdate.php?db=<?php echo $db_name; ?>&id_name=<?php echo $id_name; ?>&id=<?php echo (int) $id; ?>" method="post" class="form-horizontal" id="form_update" name="form_update" enctype="multipart/form-data">
 									<?php foreach ($group_array as $v) group($v[0], $v[1], $v[2], $v[3], $v[4], $v[5], $v[6]); ?>
 									<div class="form-actions">
 										<button type="button" class="btn btn-primary btn-sm" onclick="doupdate();"><?php echo $cms_lang[23][$language]; ?></button>

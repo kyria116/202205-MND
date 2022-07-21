@@ -32,12 +32,12 @@ include '../quote/head.php';
 
 		$query = "SELECT * FROM `$db_name` WHERE $id_name IN(1,2,3,4,5,6,7,8)";
 		$data = sql_data($query, $link, 2, "d_id");
-		$link->close();
+		mysqli_close($link);
 		?>
 		<div id="content">
 			<div id="content-header" class="mini">
 				<h1><?php echo $title[0]; ?></h1>
-				<?php include '../quote/stats.php'; ?>
+
 			</div>
 			<div id="breadcrumb">
 				<a href="index.php" title="<?php echo $cms_lang[9][$language]; ?>" class="tip-bottom"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>

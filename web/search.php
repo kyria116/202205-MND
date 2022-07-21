@@ -20,7 +20,6 @@ foreach ($kw_arr as $k => $v) {
     } else {
         $where_text = $where_text . " $type_name LIKE '%$v%'";
     }
-    // $where_text = ($type == 2) ? $where_text." $type_name = '$v' OR  $type_name LIKE '%$v%'" : $where_text." $type_name LIKE '%$v%'";
 }
 
 $query = "SELECT n_id,n_title,DATE_FORMAT(n_date, '%Y.%m.%d') AS n_date,n_stext,n_unit,n_name,n_area,nc_title,nc_id 
@@ -30,7 +29,7 @@ $query = "SELECT n_id,n_title,DATE_FORMAT(n_date, '%Y.%m.%d') AS n_date,n_stext,
 $data = sql_data($query, $link, 2, "n_id");
 
 
-$link->close();
+mysqli_close($link);
 $title_var = "搜尋  | " . $title_var;
 
 

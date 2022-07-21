@@ -31,23 +31,22 @@ FALSE：回傳false。
 */
 function sql_data($query, $link, $mode = 0, $idname = "", $classname = "")
 {
-	$stmt = $link->prepare($query);
-	$stmt->execute();
-	$result = $stmt->get_result();
+	$result = mysqli_query($link, $query);
 
 	if (mysqli_num_rows($result) == 0) $data = "";
 	elseif ($result) {
 		if ($mode == "0") {
 			$i = 1;
-			while ($row = $result->fetch_assoc()) {
-				foreach ($row as $k => $v) $data[$i][$k] = $v;
+			while ($row = mysqli_fetch_assoc($result)) {
+				foreach ($row as $k => $v) $data[$i][$k] = html_decode($v);
 				$i++;
 			}
-		} elseif ($mode == "1") while ($row = $result->fetch_assoc()) foreach ($row as $k => $v) $data[$k] = $v;
-		elseif ($mode == "2") while ($row = $result->fetch_assoc()) foreach ($row as $k => $v) $data[$row[$idname]][$k] = $v;
-		elseif ($mode == "3") while ($row = $result->fetch_assoc()) foreach ($row as $k => $v) $data[$row[$classname]][$row[$idname]][$k] = $v;
+		} elseif ($mode == "1") while ($row =  mysqli_fetch_assoc($result)) foreach ($row as $k => $v) $data[$k] = html_decode($v);
+		elseif ($mode == "2") while ($row =  mysqli_fetch_assoc($result)) foreach ($row as $k => $v) $data[$row[$idname]][$k] = html_decode($v);
+		elseif ($mode == "3") while ($row =  mysqli_fetch_assoc($result)) foreach ($row as $k => $v) $data[$row[$classname]][$row[$idname]][$k] = html_decode($v);
 	} else $data = false;
-	$result->free();
+	mysqli_free_result($result);
+
 	return $data;
 }
 

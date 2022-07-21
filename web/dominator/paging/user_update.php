@@ -3,42 +3,7 @@ ob_start();
 $page_name = "user.php";
 include '../system/ready.mak';
 
-
-
-if ($_SESSION["dominator_main"] > 1) {
-	header("Location:index.php");
-	exit();
-}
-
-if (!isset($id) || $id == "" || !is_numeric($id)) {
-	header("Location:" . $page_name);
-} else {
-	$title = $cms_lang[13][$language];
-	$db_name = "user";
-	$id_name = "u_id";
-	$account_name = "u_account";
-	$password_name = "u_password";
-	$name_name = "u_name";
-	$main_name = "u_main_purview";
-	$sub_name = "u_sub_purview";
-
-	$result = $link->query("SELECT $account_name,$password_name,$name_name,$main_name,$sub_name FROM `$db_name` WHERE $id_name = $id");
-	if ($result->num_rows != 1) header("Location:" . $page_name);
-	$row = $result->fetch_assoc();
-	$result->free();
-}
-
-
-$main_data = array("1" => "Administrator", "2" => "User");
-
-//使用者權限
-$query = "SELECT m_sub_purview FROM `menu` WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
-$Temporary_data = @sql_data($query, $link);
-$sub_data[0] = "ALL";
-if ($Temporary_data) foreach ($Temporary_data as $v) $sub_data[$v["m_sub_purview"]] = "Category " . $v["m_sub_purview"];
-$sub_count = count($sub_data);
-
-$link->close();
+if (!isset($id) || $id == "" || !is_numeric($id)) header("Location:" . $page_name);
 
 include '../quote/head.php';
 ?>
@@ -62,11 +27,45 @@ include '../quote/head.php';
 		<?php
 		include '../quote/header.php';
 		include '../quote/sidebar.php';
+
+		if ($_SESSION["dominator_main"] > 1) {
+			header("Location:index.php");
+			exit();
+		}
+
+		$title = $cms_lang[13][$language];
+		$db_name = "user";
+		$id_name = "u_id";
+		$account_name = "u_account";
+		$password_name = "u_password";
+		$name_name = "u_name";
+		$main_name = "u_main_purview";
+		$sub_name = "u_sub_purview";
+
+		$sql = "SELECT $account_name,$password_name,$name_name,$main_name,$sub_name FROM `$db_name` WHERE $id_name = $id";
+		$sql = filter_var($sql, FILTER_SANITIZE_SPECIAL_CHARS);
+		$result = mysqli_query($link, $sql);
+
+		if (mysqli_num_rows($result) != 1) header("Location:" . $page_name);
+		$row = mysqli_fetch_array($result);
+		mysqli_free_result($result);
+
+		$main_data = array("1" => "Administrator", "2" => "User");
+
+		//使用者權限
+		$query = "SELECT m_sub_purview FROM `menu` WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
+		$query = filter_var($query, FILTER_SANITIZE_SPECIAL_CHARS);
+		$Temporary_data = @sql_data($query, $link);
+		$sub_data[0] = "ALL";
+		if ($Temporary_data) foreach ($Temporary_data as $v) $sub_data[$v["m_sub_purview"]] = "Category " . $v["m_sub_purview"];
+		$sub_count = count($sub_data);
+
+		mysqli_close($link);
 		?>
 		<div id="content">
 			<div id="content-header" class="mini">
 				<h1><?php echo $cms_lang[23][$language]; ?> <?php echo $title; ?></h1>
-				<?php include '../quote/stats.php'; ?>
+
 			</div>
 			<div id="breadcrumb">
 				<a href="index.php" title="<?php echo $cms_lang[9][$language]; ?>" class="tip-bottom"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>

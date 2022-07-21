@@ -40,7 +40,7 @@ include '../quote/head.php';
 				$paging_where1 = "";
 				$search = "";
 			}
-			include '../quote/page_count.php'; //分頁計算
+			include '../quote/page_count.phppage_count.php'; //分頁計算
 		} else {
 			$paging_where = "";
 		}
@@ -50,12 +50,12 @@ include '../quote/head.php';
 		if ($paging) $query .= $paging_limit; //分頁用limit
 		$data = sql_data($query, $link);
 		if ($data) $count = count($data); //排序使用
-		$link->close();
+		mysqli_close($link);
 		?>
 		<div id="content">
 			<div id="content-header" class="mini">
 				<h1><?php echo $title; ?></h1>
-				<?php include '../quote/stats.php'; ?>
+
 			</div>
 			<div id="breadcrumb">
 				<a href="index.php" title="<?php echo $cms_lang[9][$language]; ?>" class="tip-bottom"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>
@@ -90,12 +90,12 @@ include '../quote/head.php';
 											<tr>
 												<td style="text-align: center; vertical-align: middle;" width="20%" id="td_img">
 													<div class="btn-group">
-														<button style="margin:2px 5px;" class="btn btn-xs btn-info" onclick="javascript:location.href='news.php?id=<?php echo $v[$id_name]; ?>';">新聞資訊</button>
+														<button style="margin:2px 5px;" class="btn btn-xs btn-info" onclick="javascript:location.href='news.php?id=<?php echo (int) $v[$id_name]; ?>';">新聞資訊</button>
 														<button data-toggle="dropdown" class="btn btn-xs btn-info dropdown-toggle"><span class="caret"></span></button>
 														<ul class="dropdown-menu dropdown-yellow">
-															<li><a href="<?php echo $db_name; ?>_update.php?id=<?php echo $v[$id_name]; ?>"><?php echo $cms_lang[23][$language]; ?></a></li>
+															<li><a href="<?php echo $db_name; ?>_update.php?id=<?php echo (int) $v[$id_name]; ?>"><?php echo $cms_lang[23][$language]; ?></a></li>
 															<li class="divider"></li>
-															<li><a href="#" onclick="del(<?php echo $v[$id_name]; ?>);return false;"><?php echo $cms_lang[24][$language]; ?></a></li>
+															<li><a href="#" onclick="del(<?php echo (int) $v[$id_name]; ?>);return false;"><?php echo $cms_lang[24][$language]; ?></a></li>
 														</ul>
 													</div>
 												</td>
@@ -104,7 +104,7 @@ include '../quote/head.php';
 													?>
 												</td>
 												<td style="text-align: center; vertical-align: middle; word-break:break-all;" width="60%">
-													<?php echo $v[$title_name]; ?>
+													<?php echo  filter_var($v[$title_name], FILTER_SANITIZE_SPECIAL_CHARS); ?>
 												</td>
 											</tr>
 									<?php
@@ -113,8 +113,6 @@ include '../quote/head.php';
 									?>
 								</tbody>
 							</table>
-							<?php if ($paging) include '../quote/page_code.php'; //頁籤
-							?>
 						</div>
 					</div>
 				</div>

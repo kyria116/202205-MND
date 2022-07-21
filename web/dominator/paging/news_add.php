@@ -1,17 +1,21 @@
 <?php
 include '../system/ready.mak';
+
+
 if (!isset($id) || !is_numeric($id)) {
 	header("location:./");
 	exit();
 } else {
-	$page_name = "n_class.php";
-	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = ?";
-	$stmt = $link->prepare($sql);
-	$stmt->bind_param("i", $id);
-	$stmt->execute();
-	$result = $stmt->get_result();
-	$row = $result->fetch_row();
+	$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+	$id = (int)$id;
 
+	$page_name = "n_class.php";
+	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = $id";
+	$sql = filter_var($sql, FILTER_SANITIZE_SPECIAL_CHARS);
+	$result = mysqli_query($link, $sql);
+	if (mysqli_num_rows($result) == 1) {
+		$row = mysqli_fetch_array($result);
+	}
 	$parents_id = $row[1];
 }
 include '../quote/head.php';
@@ -26,7 +30,6 @@ include '../quote/head.php';
 <link rel="stylesheet" href="../css/unicorn.css" />
 <link rel="stylesheet" href="../css/file.css" />
 <link rel="stylesheet" href="../css/cropper.min.css">
-<link rel="stylesheet" href="../css/overwrite.css">
 <!--[if lt IE 9]>
 		<script type="text/javascript" src="../js/respond.min.js"></script>
 		<![endif]-->
@@ -38,7 +41,7 @@ include '../quote/head.php';
 		include '../quote/header.php';
 		include '../quote/sidebar.php';
 
-		$title = "分類《" . $row[0] . "》消息資訊管理";
+		$title = html_decode("分類《" . $row[0] . "》消息資訊管理");
 		$db_name = "news";
 		$id_name = "n_id";
 		$title_name = "n_title";
@@ -54,8 +57,8 @@ include '../quote/head.php';
 		$m_id_name = "nc_id";
 
 
-		$link->close();
-		$title_current = "分類《" . $row[0] . "》新聞資訊";
+		mysqli_close($link);
+		$title_current = html_decode("分類《" . $row[0] . "》新聞資訊");
 
 		// 1、型態：input、date、textarea、img、file、select
 		// 2、ALL：標題
@@ -81,7 +84,7 @@ include '../quote/head.php';
 		<div id="content">
 			<div id="content-header" class="mini">
 				<h1><?php echo $cms_lang[22][$language]; ?> <?php echo $title_current; ?></h1>
-				<?php include '../quote/stats.php'; ?>
+
 			</div>
 			<div id="breadcrumb">
 				<a href="index.php" title="<?php echo $cms_lang[9][$language]; ?>" class="tip-bottom"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>

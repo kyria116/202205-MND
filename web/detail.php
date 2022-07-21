@@ -15,10 +15,10 @@ $data = sql_data($query, $link, 1);
 $nc_id = $data["nc_id"];
 $query = "SELECT n_id FROM news WHERE nc_id = $nc_id ORDER BY n_order";
 $btn_arr = array();
-$result = $link->query($query);
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        foreach ($row as $k => $v) array_push($btn_arr, $v);
+$result = mysqli_query($link, $query);
+if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        foreach ($row as $k => $v) array_push($btn_arr, html_decode($v));
     }
 }
 $current_id = array_search($id, $btn_arr);
@@ -26,7 +26,7 @@ $prev_id = ($current_id - 1 < 0) ? "" :  $btn_arr[$current_id - 1];
 $next_id = ($current_id + 1 >= count($btn_arr)) ? "" :  $btn_arr[$current_id + 1];
 
 
-$link->close();
+mysqli_close($link);
 
 $title_var = $data["n_title"] . " | " . $title_var;
 

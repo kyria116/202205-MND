@@ -4,14 +4,16 @@ if (!isset($id) || !is_numeric($id)) {
 	header("location:./");
 	exit();
 } else {
-	$page_name = "n_class.php";
+	$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+	$id = (int)$id;
 
-	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = ?";
-	$stmt = $link->prepare($sql);
-	$stmt->bind_param("i", $id);
-	$stmt->execute();
-	$result = $stmt->get_result();
-	$row = $result->fetch_row();
+	$page_name = "n_class.php";
+	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = $id";
+	$sql = filter_var($sql, FILTER_SANITIZE_SPECIAL_CHARS);
+	$result = mysqli_query($link, $sql);
+	if (mysqli_num_rows($result) == 1) {
+		$row = mysqli_fetch_array($result);
+	}
 	$parents_id = $row[1];
 }
 include '../quote/head.php';
@@ -35,7 +37,7 @@ include '../quote/head.php';
 		include '../quote/sidebar.php';
 		$_SESSION["dom_url"] = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		$title = "分類《" . $row[0] . "》消息資訊管理";
+		$title = html_decode("分類《" . $row[0] . "》消息資訊管理");
 		$db_name = "news";
 		$id_name = "n_id";
 		$title_name = "n_title";
@@ -72,12 +74,13 @@ include '../quote/head.php';
 		if ($paging) $query .= $paging_limit; //分頁用limit
 		$data = sql_data($query, $link);
 		if ($data) $count = count($data); //排序使用
-		$link->close();
+		mysqli_close($link);
+
 		?>
 		<div id="content">
 			<div id="content-header" class="mini">
 				<h1><?php echo $title; ?></h1>
-				<?php include '../quote/stats.php'; ?>
+
 			</div>
 			<div id="breadcrumb">
 				<a href="index.php" title="<?php echo $cms_lang[9][$language]; ?>" class="tip-bottom"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>
@@ -147,8 +150,6 @@ include '../quote/head.php';
 									?>
 								</tbody>
 							</table>
-							<?php if ($paging) include '../quote/page_code.php'; //頁籤
-							?>
 						</div>
 					</div>
 				</div>

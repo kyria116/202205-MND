@@ -13,7 +13,6 @@ include '../quote/head.php';
 <link rel="stylesheet" href="../css/unicorn.css" />
 <link rel="stylesheet" href="../css/file.css" />
 <link rel="stylesheet" href="../css/cropper.min.css">
-<link rel="stylesheet" href="../css/overwrite.css">
 <!--[if lt IE 9]>
 		<script type="text/javascript" src="../js/respond.min.js"></script>
 		<![endif]-->
@@ -31,7 +30,7 @@ include '../quote/head.php';
 		$title_name = "nc_title";
 		$order_name = "nc_order";
 
-		$link->close();
+		mysqli_close($link);
 		$title_current = "分類";
 
 		// 1、型態：input、date、textarea、img、file、select
@@ -48,7 +47,6 @@ include '../quote/head.php';
 		<div id="content">
 			<div id="content-header" class="mini">
 				<h1><?php echo $cms_lang[22][$language]; ?> <?php echo $title_current; ?></h1>
-				<?php include '../quote/stats.php'; ?>
 			</div>
 			<div id="breadcrumb">
 				<a href="index.php" title="<?php echo $cms_lang[9][$language]; ?>" class="tip-bottom"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>

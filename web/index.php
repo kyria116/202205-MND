@@ -21,8 +21,10 @@ if (!isset($nid) || !is_numeric($nid)) {
 $check = 8; //分頁數量
 //分頁設定開始
 $query = "SELECT COUNT(n_id) FROM `news` JOIN `n_class` USING(nc_id) $where";
+$query = filter_var($query, FILTER_SANITIZE_SPECIAL_CHARS);
 if (!isset($p) || !is_numeric($p) || $p < 1) $p = 1;
-$r = $link->query($query)->fetch_row();
+$result = mysqli_query($link, $query);
+$r = mysqli_fetch_row($result);
 $total = $r[0];
 $maxPage = $total > 0 ? ceil($total / $check) : 1;
 $p = $p > $maxPage ? 1 : $p;
@@ -35,7 +37,7 @@ if ($end_page - $start_page < 4) $end_page = $start_page + 4 <= $maxPage ? $star
 $query = "SELECT n_id,n_title,DATE_FORMAT(n_date, '%Y.%m.%d') AS n_date,n_stext,n_unit,n_name,n_area,nc_title,nc_id FROM `news` JOIN `n_class` USING(nc_id) $where $order LIMIT {$start},{$check}";
 $data = sql_data($query, $link, 2, "n_id");
 
-$link->close();
+mysqli_close($link);
 $title_var = $webtitle . " 最新消息  | " . $title_var;
 
 include "quote/template/head.php";

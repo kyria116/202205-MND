@@ -90,4 +90,3 @@
 	$close = $link -> close();//關閉資料庫連結
 	
 	echo "<script>$script</script>";//執行導頁或輸出訊息後導頁
-?>
