@@ -16,7 +16,7 @@ if (!isset($id) || !is_numeric($id)) {
 	if (mysqli_num_rows($result) == 1) {
 		$row = mysqli_fetch_array($result);
 	}
-	$parents_id = $row[1];
+	$parents_id = html_decode($row[1]);
 }
 include '../quote/head.php';
 ?>

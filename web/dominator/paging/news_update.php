@@ -1,19 +1,23 @@
 <?php
 include '../system/ready.mak';
+
+$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+$id = (int)$id;
+
 if (!isset($id) || !is_numeric($id)) {
 	header("location:./");
 	exit();
 } else {
-	$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
-	$id = (int)$id;
-
 	$page_name = "n_class.php";
-	$sql = "SELECT nc_title,nc_id FROM `news` JOIN n_class USING (nc_id) WHERE n_id = $id";
+	$sql = "SELECT nc_title,nc_id FROM `news` JOIN n_class USING (nc_id) WHERE n_id = ?";
 	$sql = filter_var($sql, FILTER_SANITIZE_SPECIAL_CHARS);
-	$result = mysqli_query($link, $sql);
-	if (mysqli_num_rows($result) == 1) {
-		$row = mysqli_fetch_array($result);
-	}
+
+	$stmt = mysqli_stmt_init($link);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, 's', $id);
+	mysqli_stmt_execute($stmt);
+	$result1 = $stmt->get_result();
+	$row = $result1->fetch_row();
 	$parents_id = html_decode($row[1]);
 }
 include '../quote/head.php';
@@ -142,8 +146,58 @@ include '../quote/head.php';
 		$('.n_unit input').after("<span style='color:red;font-weight:blod;'>*請務必確實填寫「公告單位」</span>");
 		$('.n_name input').after("<span style='color:red;font-weight:blod;'>*請務必確實填寫「公告人員」</span>");
 
+		var cropper = [];
+		var img_w = [];
+		var img_h = [];
+
+		function file_upload(type, id, img_width = '', img_height = '') {
+			if (type == 1) {
+				$("#filename" + id).html($("#file_id" + id).val());
+			} else {
+				$("#filename" + id).html("<span style='color:red;font-weight:bold;'>請確認圖片剪裁區域。<span>");
+				var input = document.querySelector('input[id=file_id' + id + ']');
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function(e) {
+						$('#preview' + id).attr('src', e.target.result);
+						if (cropper[id] != undefined) cropper[id].destroy();
+						var $image = $('#preview' + id),
+							image = $image[0];
+						var croppable = false;
+						cropper[id] = new Cropper(image, {
+							touchDragZoom: false,
+							mouseWheelZoom: false,
+							zoomable: true,
+							dragMode: "none",
+							viewMode: 0,
+							autoCropArea: 1,
+							aspectRatio: img_width / img_height
+						});
+						img_w[id] = img_width;
+						img_h[id] = img_height;
+					}
+					reader.readAsDataURL(input.files[0]);
+				}
+			}
+		};
+
 		function doupdate() {
-			$("#form_update").submit();
+			if (cropper.length) {
+				var img = [];
+				for (var i in cropper) img[i] = cropper[i].getCroppedCanvas({
+					width: img_w[i],
+					height: img_h[i],
+					fillColor: "#ffffff"
+				}).toDataURL('image/jpeg');
+				$.post("../control/imgupload.php", {
+					imgcode: img
+				}, function(data) {
+					for (var i in data.msg) $("#img_name" + i).val(data.msg[i]);
+					$("#form_update").submit();
+				}, "json");
+			} else {
+				$("#form_update").submit();
+			}
 		};
 	</script>
 </body>

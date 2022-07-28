@@ -38,7 +38,8 @@ include '../quote/head.php';
 		$check_name = "u_check";
 
 		//使用者資訊
-		$query = "SELECT $id_name,$account_name,$name_name,$check_name,$main_name,$sub_name FROM `$db_name` WHERE $main_name > " . $_SESSION["dominator_main"];
+		$dominator_main = (int) $_SESSION["dominator_main"];
+		$query = "SELECT $id_name,$account_name,$name_name,$check_name,$main_name,$sub_name FROM `$db_name` WHERE $main_name > $dominator_main ";
 		$data = @sql_data($query, $link);
 
 		$check_data = array("Y" => $cms_lang[19][$language], "N" => $cms_lang[20][$language]);

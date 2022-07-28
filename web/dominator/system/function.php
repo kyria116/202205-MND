@@ -286,96 +286,6 @@ function imageEnd($thumb, $newName, $sub_name)
 }
 
 /*
- * 【上傳圖片】
- * 參數說明：$img_name -> input name
- *                   $need_w -> 需壓縮時的圖片寬度，如不壓縮，可為空值。
- *                   $need_h -> 需壓縮時的圖片高度，如不壓縮，可為空值。
- *                   $img_id -> 同時上傳多張圖片時，請設定不同的圖片索引值，如只有上傳單張圖片，可不設定。
- * 回傳說明：["status"] -> 狀態碼：0為失敗、1為成功。
- *                   ["msg"] -> 失敗時為錯誤原因、成功時為檔案名稱。
-*/
-function upload_img($img_name, $need_w = "", $need_h = "", $img_id = 0)
-{
-	if (isset($_FILES[$img_name])) {
-		if ($_FILES[$img_name]["name"] != "") {
-			$time = date("Y_m_d_His") . $img_id; //設定字串為日期加時間，用於檔案名稱
-			$file_dir = "../upload/"; //設定檔案儲存位址
-			$file_url = $_FILES[$img_name]["tmp_name"]; //建立檔案傳入連結
-			if ($file_url != "") { //確認是否有檔案傳入
-				$name_array = explode(".", $_FILES[$img_name]["name"]);
-				$sub_name = "." . strtolower($name_array[count($name_array) - 1]);
-				$value = $time . $sub_name; //重新為檔案命名
-				if ($sub_name == ".jpg" || $sub_name == ".jpeg" || $sub_name == ".png") {
-					$src = imageStart($file_url, $sub_name);
-					$src_w = imagesx($src);
-					$src_h = imagesy($src);
-					if (($need_w == "" && $need_h == "") || ($src_w <= $need_w && $src_h <= $need_h)) {
-						move_uploaded_file($file_url, $file_dir . $value);
-					} else {
-						$need_w = $need_w == "" ? 10000 : $need_w;
-						$need_h = $need_h == "" ? 10000 : $need_h;
-						if (($src_w / $src_h) <= ($need_w / $need_h)) {
-							$thumb_h = $need_h;
-							$thumb_w = intval($need_h / $src_h * $src_w);
-						} else {
-							$thumb_w = $need_w;
-							$thumb_h = intval($need_w / $src_w * $src_h);
-						}
-						$thumb = imagecreatetruecolor($thumb_w, $thumb_h);
-						imagecopyresampled($thumb, $src, 0, 0, 0, 0, $thumb_w, $thumb_h, $src_w, $src_h);
-						imageEnd($thumb, $file_dir . $value, $sub_name);
-					}
-					$msg["status"] = 1;
-					$msg["msg"] = $value;
-				} else {
-					$msg["status"] = 0;
-					$msg["msg"] = "檔案格式錯誤：為避免安全性問題，圖片請上傳JPG、PNG檔。";
-				}
-			} else {
-				$msg["status"] = 0;
-				$msg["msg"] = "檔案過大無法上傳成功，請確認檔案大小。";
-			}
-			return $msg;
-		}
-	}
-}
-
-/*
- * 【上傳檔案】
- * 參數說明：$file_name -> input name
- *                   $file_id -> 同時上傳多數檔案時，請設定不同的圖片索引值，如只有上傳單一檔案，可不設定。
- * 回傳說明：["status"] -> 狀態碼：0為失敗、1為成功。
- *                   ["msg"] -> 失敗時為錯誤原因、成功時為檔案名稱。
- */
-function upload_file($file_name, $file_id = 0)
-{
-	if (isset($_FILES[$file_name])) {
-		if ($_FILES[$file_name]["name"] != "") {
-			$time = date("Y_m_d_His") . $file_id; //設定字串為日期加時間，用於檔案名稱
-			$file_dir = "../upload/"; //設定檔案儲存位址
-			$file_url = $_FILES[$file_name]["tmp_name"]; //建立檔案傳入連結
-			if ($file_url != "") { //確認是否有檔案傳入
-				$name_array = explode(".", $_FILES[$file_name]["name"]);
-				$sub_name = "." . strtolower($name_array[count($name_array) - 1]);
-				$value = $time . $sub_name; //重新為檔案命名
-				if ($sub_name == ".pdf" || $sub_name == ".doc" || $sub_name == ".docx" || $sub_name == ".xls" || $sub_name == ".xlsx" || $sub_name == ".csv" || $sub_name == ".jpg" || $sub_name == ".jpeg" || $sub_name == ".png") {
-					move_uploaded_file($file_url, $file_dir . $value);
-					$msg["status"] = 1;
-					$msg["msg"] = $value;
-				} else {
-					$msg["status"] = 0;
-					$msg["msg"] = "檔案格式錯誤。";
-				}
-			} else {
-				$msg["status"] = 0;
-				$msg["msg"] = "檔案過大無法上傳成功，請確認檔案大小。";
-			}
-			return $msg;
-		}
-	}
-}
-
-/*
 【GOOGLE 驗證】
  參數說明：$secret -> 伺服端金鑰
                    $response -> $_POST["g-recaptcha-response"]
@@ -405,10 +315,10 @@ function google_captcha($secret, $response)
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $PostData);
 
 	// 執行
-	$temp = json_decode(curl_exec($ch));
+	$temp = json_decode(html_decode(curl_exec($ch)));
 	// 關閉CURL連線
 	curl_close($ch);
-	foreach ($temp as $k => $v) $captcha[$k] = $v;
+	foreach ($temp as $k => $v) $captcha[$k] = html_decode($v);
 	return $captcha;
 }
 

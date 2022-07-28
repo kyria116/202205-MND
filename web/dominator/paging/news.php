@@ -1,20 +1,24 @@
 <?php
 include '../system/ready.mak';
+
+$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+$id = (int)$id;
+
 if (!isset($id) || !is_numeric($id)) {
 	header("location:./");
 	exit();
 } else {
-	$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
-	$id = (int)$id;
-
 	$page_name = "n_class.php";
-	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = $id";
+	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = ?";
 	$sql = filter_var($sql, FILTER_SANITIZE_SPECIAL_CHARS);
-	$result = mysqli_query($link, $sql);
-	if (mysqli_num_rows($result) == 1) {
-		$row = mysqli_fetch_array($result);
-	}
-	$parents_id = $row[1];
+
+	$stmt = mysqli_stmt_init($link);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, 's', $id);
+	mysqli_stmt_execute($stmt);
+	$result1 = $stmt->get_result();
+	$row = $result1->fetch_row();
+	$parents_id = html_decode($row[1]);
 }
 include '../quote/head.php';
 ?>

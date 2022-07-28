@@ -87,13 +87,13 @@ include '../quote/head.php';
 									<div class="form-group">
 										<label class="col-sm-3 col-md-3 col-lg-2 control-label"><?php echo $cms_lang[25][$language]; ?></label>
 										<div class="col-sm-9 col-md-9 col-lg-10">
-											<input type="text" class="form-control input-sm" name="<?php echo $account_name; ?>" value="<?php echo $row[$account_name]; ?>" />
+											<input type="text" class="form-control input-sm" name="<?php echo $account_name; ?>" value="<?php echo html_decode($row[$account_name]); ?>" />
 										</div>
 									</div>
 									<div class="form-group">
 										<label class="col-sm-3 col-md-3 col-lg-2 control-label"><?php echo $cms_lang[26][$language]; ?></label>
 										<div class="col-sm-9 col-md-9 col-lg-10">
-											<input type="text" class="form-control input-sm" name="<?php echo $name_name; ?>" value="<?php echo $row[$name_name]; ?>" />
+											<input type="text" class="form-control input-sm" name="<?php echo $name_name; ?>" value="<?php echo html_decode($row[$name_name]); ?>" />
 										</div>
 									</div>
 									<?php
