@@ -1,5 +1,5 @@
 <?php 
-	ini_set('session.cookie_secure','on');
+	//ini_set('session.cookie_secure','on');
 	header("X-Frame-Options: SAMEORIGIN");
 	$project_title = "資安通報";//專案名稱	
 	

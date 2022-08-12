@@ -84,7 +84,6 @@ include '../quote/head.php';
 		<div id="content">
 			<div id="content-header" class="mini">
 				<h1><?php echo $cms_lang[22][$language]; ?> <?php echo $title_current; ?></h1>
-
 			</div>
 			<div id="breadcrumb">
 				<a href="index.php" title="<?php echo $cms_lang[9][$language]; ?>" class="tip-bottom"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>
@@ -93,6 +92,11 @@ include '../quote/head.php';
 				<a class="current"><?php echo $cms_lang[22][$language]; ?> <?php echo $title_current; ?></a>
 			</div>
 			<div class="container-fluid">
+				<div class="row col-xs-12">
+					<div class="" style="background-color:#f2dede;padding:15px;">
+						圖片請轉成base64編碼，快速工具在左側 <span class="glyphicon glyphicon-picture"  aria-hidden="true"></span>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-xs-12">
 						<div class="widget-box">
@@ -116,6 +120,7 @@ include '../quote/head.php';
 					</div>
 				</div>
 			</div>
+			<?php include '../control/imgtobase64.php'; ?>
 		</div>
 		<?php include '../quote/footer.php'; ?>
 	</div>
@@ -132,6 +137,7 @@ include '../quote/head.php';
 	<script src="ckeditor/ckeditor.js"></script>
 	<script src="../js/window_load.js"></script>
 	<script src="../js/cropper.min.js"></script>
+	<script src="../js/imagetobase64.js"></script>
 	<script type="text/javascript">
 		//加入備註
 		$('.n_title input').after("<span style='color:red;font-weight:blod;'>*請務必確實填寫「主題」</span>");

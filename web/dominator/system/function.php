@@ -9,13 +9,13 @@ FALSE：回傳false。
 $project_name = "mnd"; //資料庫&使用者名稱
 function db_conn($project_name)
 {
-	// $host = "localhost";	//資料庫主機位置
-	// $user = $project_name;	//資料庫的使用者帳號
-	// $password = "mnd";	//資料庫的使用者密碼
-	// $database = $project_name;	//資料庫名稱
+	$host = "localhost";	//資料庫主機位置
+	$user = $project_name;	//資料庫的使用者帳號
+	$password = "mnd";	//資料庫的使用者密碼
+	$database = $project_name;	//資料庫名稱
 
 	//連結資料庫後告知編碼
-	$link = @mysqli_connect("localhost", "mnd", "mnd", "mnd");
+	$link = @mysqli_connect($host, $user, $password, $database);
 	if ($link) mysqli_set_charset($link, "utf8");
 	else $link = false;
 	return $link;
@@ -283,6 +283,43 @@ function imageEnd($thumb, $newName, $sub_name)
 {
 	if ($sub_name == ".png") return imagepng($thumb, $newName);
 	else return imagejpeg($thumb, $newName);
+}
+
+/*
+【GOOGLE 驗證】
+ 參數說明：$secret -> 伺服端金鑰
+                   $response -> $_POST["g-recaptcha-response"]
+ 回傳說明：["success"] -> 狀態碼：false為失敗、true為成功。
+*/
+function google_captcha($secret, $response)
+{
+	//google接收網址
+	$url = "https://www.google.com/recaptcha/api/siteverify";
+
+	// 建立CURL連線
+	$ch = curl_init();
+
+	// 設定擷取的URL網址
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_HEADER, false);
+
+	//將curl_exec()獲取的訊息以文件流的形式返回，而不是直接輸出。
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	//設定要傳的 變數A=值A & 變數B=值B (中間要用&符號串接)
+	$PostData = "secret=" . $secret . "&response=" . $response;
+
+	//設定CURLOPT_POST 為 1或true，表示要用POST方式傳遞
+	curl_setopt($ch, CURLOPT_POST, 1);
+	//CURLOPT_POSTFIELDS 後面則是要傳接的POST資料。
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $PostData);
+
+	// 執行
+	$temp = json_decode(html_decode(curl_exec($ch)));
+	// 關閉CURL連線
+	curl_close($ch);
+	foreach ($temp as $k => $v) $captcha[$k] = html_decode($v);
+	return $captcha;
 }
 
 /*
