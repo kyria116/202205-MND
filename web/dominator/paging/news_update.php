@@ -91,9 +91,10 @@ include '../quote/head.php';
 		);
 		$group_array = g_array($group_array, $data);
 		?>
-		<div id="content">			
+		<div id="content">
 			<div id="content-header" class="mini">
 				<h1><?php echo $cms_lang[23][$language]; ?> <?php echo $title_current; ?></h1>
+
 			</div>
 			<div id="breadcrumb">
 				<a href="index.php" title="<?php echo $cms_lang[9][$language]; ?>" class="tip-bottom"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>
@@ -102,11 +103,6 @@ include '../quote/head.php';
 				<a class="current"><?php echo $cms_lang[23][$language]; ?> <?php echo $title_current; ?></a>
 			</div>
 			<div class="container-fluid">
-				<div class="row col-xs-12">
-					<div class="" style="background-color:#f2dede;padding:15px;">
-						圖片請轉成base64編碼，快速工具在左側 <span class="glyphicon glyphicon-picture"  aria-hidden="true"></span>
-					</div>
-				</div>
 				<div class="row">
 					<div class="col-xs-12">
 						<div class="widget-box">
@@ -128,7 +124,6 @@ include '../quote/head.php';
 					</div>
 				</div>
 			</div>
-			<?php include '../control/imgtobase64.php'; ?>
 		</div>
 		<?php include '../quote/footer.php'; ?>
 	</div>
@@ -145,16 +140,64 @@ include '../quote/head.php';
 	<script src="ckeditor/ckeditor.js"></script>
 	<script src="../js/window_load.js"></script>
 	<script src="../js/cropper.min.js"></script>
-	<script src="../js/imagetobase64.js"></script>
 	<script type="text/javascript">
 		//加入備註
 		$('.n_title input').after("<span style='color:red;font-weight:blod;'>*請務必確實填寫「主題」</span>");
 		$('.n_unit input').after("<span style='color:red;font-weight:blod;'>*請務必確實填寫「公告單位」</span>");
 		$('.n_name input').after("<span style='color:red;font-weight:blod;'>*請務必確實填寫「公告人員」</span>");
 
+		var cropper = [];
+		var img_w = [];
+		var img_h = [];
+
+		function file_upload(type, id, img_width = '', img_height = '') {
+			if (type == 1) {
+				$("#filename" + id).html($("#file_id" + id).val());
+			} else {
+				$("#filename" + id).html("<span style='color:red;font-weight:bold;'>請確認圖片剪裁區域。<span>");
+				var input = document.querySelector('input[id=file_id' + id + ']');
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function(e) {
+						$('#preview' + id).attr('src', e.target.result);
+						if (cropper[id] != undefined) cropper[id].destroy();
+						var $image = $('#preview' + id),
+							image = $image[0];
+						var croppable = false;
+						cropper[id] = new Cropper(image, {
+							touchDragZoom: false,
+							mouseWheelZoom: false,
+							zoomable: true,
+							dragMode: "none",
+							viewMode: 0,
+							autoCropArea: 1,
+							aspectRatio: img_width / img_height
+						});
+						img_w[id] = img_width;
+						img_h[id] = img_height;
+					}
+					reader.readAsDataURL(input.files[0]);
+				}
+			}
+		};
 
 		function doupdate() {
-			$("#form_update").submit();
+			if (cropper.length) {
+				var img = [];
+				for (var i in cropper) img[i] = cropper[i].getCroppedCanvas({
+					width: img_w[i],
+					height: img_h[i],
+					fillColor: "#ffffff"
+				}).toDataURL('image/jpeg');
+				$.post("../control/imgupload.php", {
+					imgcode: img
+				}, function(data) {
+					for (var i in data.msg) $("#img_name" + i).val(data.msg[i]);
+					$("#form_update").submit();
+				}, "json");
+			} else {
+				$("#form_update").submit();
+			}
 		};
 	</script>
 </body>
