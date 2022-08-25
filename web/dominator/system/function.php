@@ -15,9 +15,13 @@ function db_conn($project_name)
 	$database = $project_name;	//資料庫名稱
 
 	//連結資料庫後告知編碼
-	$link = @mysqli_connect($host, $user, $password, $database);
-	if ($link) mysqli_set_charset($link, "utf8");
-	else $link = false;
+	try {
+		$link = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $user, $password, array(PDO::ATTR_PERSISTENT => true));
+		// set the PDO error mode to exception
+		$link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} catch (PDOException $e) {
+		echo "Connection failed: " . $e->getMessage();
+	}
 	return $link;
 }
 
@@ -31,21 +35,24 @@ FALSE：回傳false。
 */
 function sql_data($query, $link, $mode = 0, $idname = "", $classname = "")
 {
-	$result = mysqli_query($link, $query);
+	$sth = $link->prepare($query);
+	$link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$link->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+	$sth->execute();
+	$result = $sth->setFetchMode(PDO::FETCH_ASSOC);
 
-	if (mysqli_num_rows($result) == 0) $data = "";
-	elseif ($result) {
+	$data = array();
+	if ($result) {
 		if ($mode == "0") {
 			$i = 1;
-			while ($row = mysqli_fetch_assoc($result)) {
+			while ($row = $sth->fetch()) {
 				foreach ($row as $k => $v) $data[$i][$k] = html_decode($v);
 				$i++;
 			}
-		} elseif ($mode == "1") while ($row =  mysqli_fetch_assoc($result)) foreach ($row as $k => $v) $data[$k] = html_decode($v);
-		elseif ($mode == "2") while ($row =  mysqli_fetch_assoc($result)) foreach ($row as $k => $v) $data[$row[$idname]][$k] = html_decode($v);
-		elseif ($mode == "3") while ($row =  mysqli_fetch_assoc($result)) foreach ($row as $k => $v) $data[$row[$classname]][$row[$idname]][$k] = html_decode($v);
-	} else $data = false;
-	mysqli_free_result($result);
+		} elseif ($mode == "1") while ($row = $sth->fetch()) foreach ($row as $k => $v) $data[$k] = html_decode($v);
+		elseif ($mode == "2") while ($row = $sth->fetch()) foreach ($row as $k => $v) $data[$row[$idname]][$k] = html_decode($v);
+		elseif ($mode == "3") while ($row = $sth->fetch()) foreach ($row as $k => $v) $data[$row[$classname]][$row[$idname]][$k] = html_decode($v);
+	}
 
 	return $data;
 }
@@ -55,9 +62,10 @@ function sql_data($query, $link, $mode = 0, $idname = "", $classname = "")
 	$variable：變數
 	$link：資料庫連線
 */
+
 function filtration($variable, $link)
 {
-	$variable = htmlentities(mysqli_real_escape_string($link, preg_replace('/[Jj][Aa][Vv][Aa][Ss][Cc][Rr][Ii][Pp][Tt]/', "", $variable)), ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+	$variable = htmlentities(substr($link->quote(preg_replace('/[Jj][Aa][Vv][Aa][Ss][Cc][Rr][Ii][Pp][Tt]/', "", $variable)), 1, -1), ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
 	return $variable;
 }
 
@@ -283,43 +291,6 @@ function imageEnd($thumb, $newName, $sub_name)
 {
 	if ($sub_name == ".png") return imagepng($thumb, $newName);
 	else return imagejpeg($thumb, $newName);
-}
-
-/*
-【GOOGLE 驗證】
- 參數說明：$secret -> 伺服端金鑰
-                   $response -> $_POST["g-recaptcha-response"]
- 回傳說明：["success"] -> 狀態碼：false為失敗、true為成功。
-*/
-function google_captcha($secret, $response)
-{
-	//google接收網址
-	$url = "https://www.google.com/recaptcha/api/siteverify";
-
-	// 建立CURL連線
-	$ch = curl_init();
-
-	// 設定擷取的URL網址
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_HEADER, false);
-
-	//將curl_exec()獲取的訊息以文件流的形式返回，而不是直接輸出。
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-	//設定要傳的 變數A=值A & 變數B=值B (中間要用&符號串接)
-	$PostData = "secret=" . $secret . "&response=" . $response;
-
-	//設定CURLOPT_POST 為 1或true，表示要用POST方式傳遞
-	curl_setopt($ch, CURLOPT_POST, 1);
-	//CURLOPT_POSTFIELDS 後面則是要傳接的POST資料。
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $PostData);
-
-	// 執行
-	$temp = json_decode(html_decode(curl_exec($ch)));
-	// 關閉CURL連線
-	curl_close($ch);
-	foreach ($temp as $k => $v) $captcha[$k] = html_decode($v);
-	return $captcha;
 }
 
 /*

@@ -20,7 +20,7 @@ include '../quote/head.php';
 		include '../quote/header.php';
 		include '../quote/sidebar.php';
 		$_SESSION["dom_url"] = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		mysqli_close($link);
+		$link = null;
 		?>
 		<div id="content">
 			<div id="content-header" class="mini">

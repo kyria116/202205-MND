@@ -9,15 +9,15 @@ if (!isset($id) || !is_numeric($id)) {
 	exit();
 } else {
 	$page_name = "n_class.php";
-	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = ?";
-	$sql = filter_var($sql, FILTER_SANITIZE_SPECIAL_CHARS);
+	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = :id";
 
-	$stmt = mysqli_stmt_init($link);
-	mysqli_stmt_prepare($stmt, $sql);
-	mysqli_stmt_bind_param($stmt, 's', $id);
-	mysqli_stmt_execute($stmt);
-	$result1 = $stmt->get_result();
-	$row = $result1->fetch_row();
+	$stmt = $link->prepare($sql);
+	$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+	$stmt->execute();
+
+	$row = $stmt->setFetchMode(PDO::FETCH_NUM);
+	$row = $stmt->fetch(PDO::FETCH_NUM);
+
 	$parents_id = html_decode($row[1]);
 }
 include '../quote/head.php';
@@ -78,7 +78,7 @@ include '../quote/head.php';
 		if ($paging) $query .= $paging_limit; //分頁用limit
 		$data = sql_data($query, $link);
 		if ($data) $count = count($data); //排序使用
-		mysqli_close($link);
+		$link = null;
 
 		?>
 		<div id="content">

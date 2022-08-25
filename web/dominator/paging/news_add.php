@@ -10,12 +10,14 @@ if (!isset($id) || !is_numeric($id)) {
 	$id = (int)$id;
 
 	$page_name = "n_class.php";
-	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = $id";
-	$sql = filter_var($sql, FILTER_SANITIZE_SPECIAL_CHARS);
-	$result = mysqli_query($link, $sql);
-	if (mysqli_num_rows($result) == 1) {
-		$row = mysqli_fetch_array($result);
-	}
+	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = :id";
+	$stmt = $link->prepare($sql);
+	$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+	$stmt->execute();
+
+	$row = $stmt->setFetchMode(PDO::FETCH_NUM);
+	$row = $stmt->fetch(PDO::FETCH_NUM);
+
 	$parents_id = html_decode($row[1]);
 }
 include '../quote/head.php';
@@ -57,7 +59,7 @@ include '../quote/head.php';
 		$m_id_name = "nc_id";
 
 
-		mysqli_close($link);
+		$link = null;
 		$title_current = html_decode("分類《" . $row[0] . "》新聞資訊");
 
 		// 1、型態：input、date、textarea、img、file、select

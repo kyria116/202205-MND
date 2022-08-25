@@ -29,7 +29,7 @@ include '../quote/head.php';
 					else echo $cms_lang[8][$language] . " " . $_SESSION["dominator_name"];
 					?>
 				</h1>
-				<?php mysqli_close($link); ?>
+				<?php $link = null; ?>
 			</div>
 			<div id="breadcrumb">
 				<a href="#" title="<?php echo $cms_lang[9][$language]; ?>" class="current"><i class="fa fa-home"></i> <?php echo $cms_lang[10][$language]; ?></a>

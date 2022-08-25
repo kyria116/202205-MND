@@ -42,25 +42,27 @@ include '../quote/head.php';
 		$main_name = "u_main_purview";
 		$sub_name = "u_sub_purview";
 
-		$sql = "SELECT $account_name,$password_name,$name_name,$main_name,$sub_name FROM `$db_name` WHERE $id_name = $id";
-		$sql = filter_var($sql, FILTER_SANITIZE_SPECIAL_CHARS);
-		$result = mysqli_query($link, $sql);
+		$sql = "SELECT $account_name,$password_name,$name_name,$main_name,$sub_name FROM `$db_name` WHERE $id_name = :id";
+		$result = $link->prepare($sql);
+		$result->bindValue(':id', $id, PDO::PARAM_INT);
+		$result->execute();
 
-		if (mysqli_num_rows($result) != 1) header("Location:" . $page_name);
-		$row = mysqli_fetch_array($result);
-		mysqli_free_result($result);
+		if ($result->rowCount() != 1) header("Location:" . $page_name);
+		$row = $result->setFetchMode(PDO::FETCH_ASSOC);
+		$row = $result->fetch(PDO::FETCH_ASSOC);
+
+
 
 		$main_data = array("1" => "Administrator", "2" => "User");
 
 		//使用者權限
 		$query = "SELECT m_sub_purview FROM `menu` WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
-		$query = filter_var($query, FILTER_SANITIZE_SPECIAL_CHARS);
 		$Temporary_data = @sql_data($query, $link);
 		$sub_data[0] = "ALL";
 		if ($Temporary_data) foreach ($Temporary_data as $v) $sub_data[$v["m_sub_purview"]] = "Category " . $v["m_sub_purview"];
 		$sub_count = count($sub_data);
 
-		mysqli_close($link);
+		$link = null;
 		?>
 		<div id="content">
 			<div id="content-header" class="mini">
@@ -117,7 +119,6 @@ include '../quote/head.php';
 										</div>
 									<?php
 									}
-									// 											if($_SESSION["dominator_main"] <= 1){
 									if ($_SESSION["dominator_main"] == 0) {
 									?>
 										<div class="form-group">

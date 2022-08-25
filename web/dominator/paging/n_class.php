@@ -50,7 +50,7 @@ include '../quote/head.php';
 		if ($paging) $query .= $paging_limit; //分頁用limit
 		$data = sql_data($query, $link);
 		if ($data) $count = count($data); //排序使用
-		mysqli_close($link);
+		$link = null;
 		?>
 		<div id="content">
 			<div id="content-header" class="mini">

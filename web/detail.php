@@ -13,20 +13,20 @@ $data = sql_data($query, $link, 1);
 
 //上一則&下一則
 $nc_id = $data["nc_id"];
-$query = "SELECT n_id FROM news WHERE nc_id = $nc_id ORDER BY n_order";
+$sql = "SELECT n_id FROM news WHERE nc_id = $nc_id ORDER BY n_order";
 $btn_arr = array();
-$result = mysqli_query($link, $query);
-if (mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
+$query = $link->prepare($sql);
+$query->execute();
+$result = $query->setFetchMode(PDO::FETCH_ASSOC);
+if ($query->rowCount() > 0) {
+    while ($row = $query->fetch()) {
         foreach ($row as $k => $v) array_push($btn_arr, html_decode($v));
     }
 }
 $current_id = array_search($id, $btn_arr);
 $prev_id = ($current_id - 1 < 0) ? "" :  $btn_arr[$current_id - 1];
 $next_id = ($current_id + 1 >= count($btn_arr)) ? "" :  $btn_arr[$current_id + 1];
-
-
-mysqli_close($link);
+$link = null;
 
 $title_var = $data["n_title"] . " | " . $title_var;
 

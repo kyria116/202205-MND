@@ -32,7 +32,7 @@ include '../quote/head.php';
 
 		$query = "SELECT * FROM `$db_name` WHERE $id_name IN(1,2,3,4,5,6,7,8)";
 		$data = sql_data($query, $link, 2, "d_id");
-		mysqli_close($link);
+		$link = null;
 		?>
 		<div id="content">
 			<div id="content-header" class="mini">

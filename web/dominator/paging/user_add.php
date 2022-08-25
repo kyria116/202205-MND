@@ -44,13 +44,13 @@ include '../quote/head.php';
 
 		//使用者權限		
 		$query = "SELECT m_sub_purview FROM `menu` WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
-		$query = filter_var($query, FILTER_SANITIZE_SPECIAL_CHARS);
+
 		$Temporary_data = @sql_data($query, $link);
 		$sub_data[0] = "ALL";
 		if ($Temporary_data) foreach ($Temporary_data as $v) $sub_data[$v["m_sub_purview"]] = "Category " . $v["m_sub_purview"];
 		$sub_count = count($sub_data);
 
-		mysqli_close($link);
+		$link = null;
 		?>
 		<div id="content">
 			<div id="content-header" class="mini">

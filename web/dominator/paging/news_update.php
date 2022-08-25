@@ -9,15 +9,13 @@ if (!isset($id) || !is_numeric($id)) {
 	exit();
 } else {
 	$page_name = "n_class.php";
-	$sql = "SELECT nc_title,nc_id FROM `news` JOIN n_class USING (nc_id) WHERE n_id = ?";
-	$sql = filter_var($sql, FILTER_SANITIZE_SPECIAL_CHARS);
+	$sql = "SELECT nc_title,nc_id FROM `news` JOIN n_class USING (nc_id) WHERE n_id = :id";
+	$stmt = $link->prepare($sql);
+	$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+	$stmt->execute();
+	$row = $stmt->setFetchMode(PDO::FETCH_NUM);
+	$row = $stmt->fetch(PDO::FETCH_NUM);
 
-	$stmt = mysqli_stmt_init($link);
-	mysqli_stmt_prepare($stmt, $sql);
-	mysqli_stmt_bind_param($stmt, 's', $id);
-	mysqli_stmt_execute($stmt);
-	$result1 = $stmt->get_result();
-	$row = $result1->fetch_row();
 	$parents_id = html_decode($row[1]);
 }
 include '../quote/head.php';
@@ -66,7 +64,7 @@ include '../quote/head.php';
 		$query = "SELECT * FROM `n_class` ORDER BY nc_order";
 		$classify_ary = sql_data($query, $link, 2, "nc_id");
 
-		mysqli_close($link);
+		$link = null;
 
 		$title_current = html_decode($row[0] . "《" . $data[$title_name] . "》");
 

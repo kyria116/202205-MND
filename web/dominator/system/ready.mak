@@ -1,5 +1,5 @@
 <?php 
-	//ini_set('session.cookie_secure','on');
+	ini_set('session.cookie_secure','on');
 	header("X-Frame-Options: SAMEORIGIN");
 	$project_title = "資安通報";//專案名稱	
 	
@@ -64,10 +64,7 @@
 	include 'function.php';
 	
 	$link = db_conn($project_name);//建立資料庫連線
-	if(!$link){
-		echo "Database connection failed.";  
-		exit;
-	}
+
 	
 	/*
 	【將GET、POST轉換為同名變數】

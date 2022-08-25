@@ -40,7 +40,7 @@ include '../quote/head.php';
 		//資訊
 		$query = "SELECT * FROM `$db_name` WHERE $id_name = '$id'";
 		$data = sql_data($query, $link, 1);
-		mysqli_close($link);
+		$link = null;
 		$title_current = html_decode("分類《" . $data[$title_name] . "》");
 
 		// 1、型態：input、date、textarea、img、file、select

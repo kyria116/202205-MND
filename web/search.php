@@ -28,8 +28,7 @@ $query = "SELECT n_id,n_title,DATE_FORMAT(n_date, '%Y.%m.%d') AS n_date,n_stext,
                 ORDER BY n_date DESC,n_id DESC";
 $data = sql_data($query, $link, 2, "n_id");
 
-
-mysqli_close($link);
+$link = null;
 $title_var = "搜尋  | " . $title_var;
 
 

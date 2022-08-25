@@ -30,7 +30,7 @@ include '../quote/head.php';
 		$title_name = "nc_title";
 		$order_name = "nc_order";
 
-		mysqli_close($link);
+		$link = null;
 		$title_current = "分類";
 
 		// 1、型態：input、date、textarea、img、file、select
