@@ -42,13 +42,12 @@ include '../quote/head.php';
 		$main_name = "u_main_purview";
 		$sub_name = "u_sub_purview";
 
-		$sql = "SELECT $account_name,$password_name,$name_name,$main_name,$sub_name FROM `$db_name` WHERE $id_name = :id";
-		$result = $link->prepare($sql);
-		$result->bindValue(':id', $id, PDO::PARAM_INT);
+		$sql = "SELECT $account_name,$password_name,$name_name,$main_name,$sub_name FROM [$db_name] WHERE $id_name = :id";
+		$result = $link->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+		$result->bindParam(':id', $id, PDO::PARAM_INT);
 		$result->execute();
 
 		if ($result->rowCount() != 1) header("Location:" . $page_name);
-		$row = $result->setFetchMode(PDO::FETCH_ASSOC);
 		$row = $result->fetch(PDO::FETCH_ASSOC);
 
 
@@ -56,7 +55,7 @@ include '../quote/head.php';
 		$main_data = array("1" => "Administrator", "2" => "User");
 
 		//使用者權限
-		$query = "SELECT m_sub_purview FROM `menu` WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
+		$query = "SELECT m_sub_purview FROM [menu] WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
 		$Temporary_data = @sql_data($query, $link);
 		$sub_data[0] = "ALL";
 		if ($Temporary_data) foreach ($Temporary_data as $v) $sub_data[$v["m_sub_purview"]] = "Category " . $v["m_sub_purview"];

@@ -7,8 +7,10 @@ $id_set = "u_id";
 $name_set = "u_name";
 $password_set = "u_password";
 
-$result = $link->prepare("SELECT $id_set FROM `$db_set` WHERE $id_set = '$id' AND $password_set = MD5('$password')");
+$password_md5 = "substring(sys.fn_sqlvarbasetostr(HashBytes('MD5','$password')),3,32)";
+$result = $link->prepare("SELECT $id_set FROM [$db_set] WHERE $id_set = '$id' AND $password_set = $password_md5", array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
 $result->execute();
+
 if ($result->rowCount() > 0) {
 	echo "1";
 } else {

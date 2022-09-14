@@ -3,7 +3,7 @@ include 'dominator/system/ready.mak';
 include 'quote/include_data.php';
 
 //分類標題
-$query = "SELECT nc_id,nc_title FROM `n_class` JOIN `news` USING(nc_id) ORDER BY nc_order";
+$query = "SELECT [news].nc_id,nc_title FROM [n_class] INNER JOIN [news] ON [news].nc_id = [n_class].nc_id ORDER BY nc_order";
 $c_data = sql_data($query, $link, 2, "nc_id");
 
 if (!isset($nid) || !is_numeric($nid)) {
@@ -12,7 +12,7 @@ if (!isset($nid) || !is_numeric($nid)) {
     $page_set = "?p="; //頁碼
     $webtitle = ""; //分類標題
 } else {
-    $where = "WHERE nc_id = $nid";
+    $where = "WHERE [news].nc_id = $nid";
     $order = "ORDER BY n_order";
     $page_set = "?nid=$nid&p="; //頁碼
     $webtitle = $c_data[$nid]["nc_title"] . "|"; //分類標題
@@ -20,7 +20,7 @@ if (!isset($nid) || !is_numeric($nid)) {
 
 $check = 8; //分頁數量
 //分頁設定開始
-$query = "SELECT COUNT(n_id) FROM `news` JOIN `n_class` USING(nc_id) $where";
+$query = "SELECT COUNT(n_id) FROM [news] INNER JOIN [n_class] ON [news].nc_id = [n_class].nc_id $where";
 $query = filter_var($query, FILTER_SANITIZE_SPECIAL_CHARS);
 if (!isset($p) || !is_numeric($p) || $p < 1) $p = 1;
 $result = $link->prepare($query);
@@ -35,8 +35,10 @@ $start_page = $end_page - 4 >= 1 ? $end_page - 4 : 1;
 if ($end_page - $start_page < 4) $end_page = $start_page + 4 <= $maxPage ? $start_page + 4 : $maxPage;
 
 //內容
-$query = "SELECT n_id,n_title,DATE_FORMAT(n_date, '%Y.%m.%d') AS n_date,n_stext,n_unit,n_name,n_area,nc_title,nc_id FROM `news` JOIN `n_class` USING(nc_id) $where $order LIMIT {$start},{$check}";
+$query = "SELECT n_id,n_title,convert(varchar(12), n_date, 102) AS n_date,n_stext,n_unit,n_name,n_area,nc_title,[news].nc_id FROM [news] INNER JOIN [n_class] ON [news].nc_id = [n_class].nc_id $where $order offset {$start} rows fetch next {$check} rows only";
 $data = sql_data($query, $link, 2, "n_id");
+
+if (!$data) header("location:./");
 
 $link = null;
 $title_var = $webtitle . " 最新消息  | " . $title_var;

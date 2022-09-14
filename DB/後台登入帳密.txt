@@ -1,0 +1,11 @@
+﻿源做帳密資訊：
+帳號：MAK_supervisor
+密碼：MAK168
+
+
+
+客戶帳密資訊：
+帳號：mnd_admin
+密碼：test1234
+
+

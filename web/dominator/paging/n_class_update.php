@@ -38,7 +38,7 @@ include '../quote/head.php';
 		$order_name = "nc_order";
 
 		//資訊
-		$query = "SELECT * FROM `$db_name` WHERE $id_name = '$id'";
+		$query = "SELECT * FROM [$db_name] WHERE $id_name = '$id'";
 		$data = sql_data($query, $link, 1);
 		$link = null;
 		$title_current = html_decode("分類《" . $data[$title_name] . "》");

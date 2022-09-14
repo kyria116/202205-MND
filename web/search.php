@@ -22,8 +22,8 @@ foreach ($kw_arr as $k => $v) {
     }
 }
 
-$query = "SELECT n_id,n_title,DATE_FORMAT(n_date, '%Y.%m.%d') AS n_date,n_stext,n_unit,n_name,n_area,nc_title,nc_id 
-                FROM `news` JOIN `n_class` USING(nc_id)
+$query = "SELECT n_id,n_title,convert(varchar(12), n_date, 102) AS n_date,n_stext,n_unit,n_name,n_area,nc_title,[news].nc_id 
+                FROM [news] INNER JOIN [n_class] ON [news].nc_id = [n_class].nc_id 
                 WHERE $where_text
                 ORDER BY n_date DESC,n_id DESC";
 $data = sql_data($query, $link, 2, "n_id");

@@ -12,3 +12,7 @@ web/dominator/paging/ckfinder
 web/dominator/paging/xckeditor
 web/dominator/paging/xckfinder
 web/test.php
+
+DB/*.ipynb
+DB/*.mdf
+DB/*.ldf

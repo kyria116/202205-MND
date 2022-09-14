@@ -30,10 +30,10 @@ $check_set = "u_check";
 $error_set = "u_error";
 
 //用來確認帳號是否正常可使用的sql
-$check_query = "SELECT $check_set,$error_set,$id_set FROM `$db_set` WHERE $account_set='$username'";
-$check_result = $link->prepare($check_query);
+$check_query = "SELECT [$check_set],[$error_set],[$id_set] FROM [$db_set] WHERE [$account_set]= :username";
+$check_result = $link->prepare($check_query, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+$check_result->bindParam(':username', $username, PDO::PARAM_STR);
 $check_result->execute();
-$check_row = $check_result->setFetchMode(PDO::FETCH_OBJ);
 $check_row = $check_result->fetch(PDO::FETCH_OBJ);
 
 $script = '';	//用來儲存對話框訊息
@@ -43,25 +43,31 @@ if (@$check_result->rowCount() == 1) { //確認是否只有抓到一筆帳號紀
 	if ($check_row->$check_set == "Y") { //確認帳號是否正常可使用
 		//用以比對帳號密碼是否正確的sql
 		$password = md5($password);
-		$user_result = $link->prepare("SELECT $id_set,$name_set,$main_purview_set,$sub_purview_set FROM `$db_set` WHERE $account_set = '$username' AND $password_set = '$password'");
+		$user_result = $link->prepare("SELECT [$id_set],[$name_set],[$main_purview_set],[$sub_purview_set] FROM [$db_set] WHERE [$account_set] = :user AND [$password_set] = :pass", array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+		$user_result->bindParam(':user', $username, PDO::PARAM_STR);
+		$user_result->bindParam(':pass', $password, PDO::PARAM_STR);
 		$user_result->execute();
-		$user_row = $user_result->setFetchMode(PDO::FETCH_OBJ);
 		$user_row = $user_result->fetch(PDO::FETCH_OBJ);
 
 		if (@$user_result->rowCount() == 1) { //判斷帳號密碼是否正確
 			//登入成功後，將錯誤次數歸零的sql
-			$link->exec("UPDATE `$db_set` SET $error_set = 0 WHERE $id_set=" . $user_row->$id_set);
+			$link->prepare("UPDATE [$db_set] SET [$error_set] = 0 WHERE [$id_set]=" . $user_row->$id_set)->execute();
 
 			if (!empty($_SERVER['HTTP_CLIENT_IP'])) $myip = $_SERVER['HTTP_CLIENT_IP'];
 			else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) $myip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 			else $myip = $_SERVER['REMOTE_ADDR'];
 
 			//並寫入登入紀錄
-			$link->exec("INSERT INTO `record` (r_date,r_text,r_name,r_account,r_ip) VALUES(NOW(),'登入','" . $user_row->$name_set . "','$username','$myip')"); //執行sql語法				
+			$u_name = $user_row->$name_set;
+			$sql = "INSERT INTO [record] ([r_date],[r_text],[r_name],[r_account],[r_ip]) VALUES(getdate(),'登入',:r_name,:r_account,:myip)";
+			$stmt = $link->prepare($sql);
+			$stmt->bindParam(':r_name', $user_row->$name_set, PDO::PARAM_STR);
+			$stmt->bindParam(':r_account', $username, PDO::PARAM_STR);
+			$stmt->bindParam(':myip', $myip, PDO::PARAM_STR);
+			$stmt->execute();
 
 			//開啟session暫存需要的資料
 			session_start();
-			// 				$_SESSION['is_user'] = true;
 			$credentials = md5(date("Y") . $project_name . date("md"));
 			$_SESSION[$credentials] = true;
 			$_SESSION["dominator_id"] = $user_row->$id_set;
@@ -79,8 +85,8 @@ if (@$check_result->rowCount() == 1) { //確認是否只有抓到一筆帳號紀
 			}
 
 			//用於增加錯誤次數或鎖帳號的sql
-			$error_query = "UPDATE `$db_set` SET $error_set = $error_set + 1 $error WHERE $id_set =" . $check_row->$id_set;
-			$link->exec($error_query);
+			$error_query = "UPDATE [$db_set] SET [$error_set] = [$error_set] + 1 $error WHERE [$id_set] =" . $check_row->$id_set;
+			$link->prepare($error_query)->execute();
 
 			$script = 'alert("' . $cms_lang[16][$language] . '");' . 'location.href = "../index.php";'; //告知錯誤後導回登入頁
 		}

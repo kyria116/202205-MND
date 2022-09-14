@@ -30,7 +30,7 @@ include '../quote/head.php';
 		$id_name = "d_id";
 		$text_name = "d_text";
 
-		$query = "SELECT * FROM `$db_name` WHERE $id_name IN(1,2,3,4,5,6,7,8)";
+		$query = "SELECT * FROM [$db_name] WHERE $id_name IN(1,2,3,4,5,6,7,8)";
 		$data = sql_data($query, $link, 2, "d_id");
 		$link = null;
 		?>

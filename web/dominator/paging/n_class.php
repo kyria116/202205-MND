@@ -30,23 +30,10 @@ include '../quote/head.php';
 
 
 		$paging = false; //如果不使用php分頁，請改為：false
-		if ($paging) {
-			$paging_where = "";
-			$paging_where1 = "";
-			if (isset($search) && $search != "") { //搜尋使用
-				$paging_where = "WHERE $name_name LIKE '%$search%'";
-				$paging_where1 = $paging_where;
-			} else {
-				$paging_where1 = "";
-				$search = "";
-			}
-			include '../quote/page_count.phppage_count.php'; //分頁計算
-		} else {
-			$paging_where = "";
-		}
+		$paging_where = "";
 
 		//資訊
-		$query = "SELECT * FROM `$db_name` $paging_where ORDER BY $order_name";
+		$query = "SELECT * FROM [$db_name] $paging_where ORDER BY $order_name";
 		if ($paging) $query .= $paging_limit; //分頁用limit
 		$data = sql_data($query, $link);
 		if ($data) $count = count($data); //排序使用

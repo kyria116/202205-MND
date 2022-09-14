@@ -43,7 +43,7 @@ include '../quote/head.php';
 		$main_data = array("1" => "Administrator", "2" => "User");
 
 		//使用者權限		
-		$query = "SELECT m_sub_purview FROM `menu` WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
+		$query = "SELECT m_sub_purview FROM [menu] WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
 
 		$Temporary_data = @sql_data($query, $link);
 		$sub_data[0] = "ALL";

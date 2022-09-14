@@ -39,7 +39,7 @@ include '../quote/head.php';
 
 		//使用者資訊
 		$dominator_main = (int) $_SESSION["dominator_main"];
-		$query = "SELECT $id_name,$account_name,$name_name,$check_name,$main_name,$sub_name FROM `$db_name` WHERE $main_name > $dominator_main ";
+		$query = "SELECT $id_name,$account_name,$name_name,$check_name,$main_name,$sub_name FROM [$db_name] WHERE $main_name > $dominator_main ";
 		$data = @sql_data($query, $link);
 
 		$check_data = array("Y" => $cms_lang[19][$language], "N" => $cms_lang[20][$language]);
@@ -47,7 +47,7 @@ include '../quote/head.php';
 		$main_data = array("1" => "Administrator", "2" => "User");
 
 		//使用者權限
-		$query = "SELECT m_sub_purview FROM `menu` WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
+		$query = "SELECT m_sub_purview FROM [menu] WHERE	m_main_purview > 1 AND m_sub_purview <> 0 GROUP BY m_sub_purview ORDER BY	m_sub_purview";
 		$Temporary_data = @sql_data($query, $link);
 		$sub_data[0] = "ALL";
 		if ($Temporary_data) foreach ($Temporary_data as $v) $sub_data[$v["m_sub_purview"]] = "Category " . $v["m_sub_purview"];

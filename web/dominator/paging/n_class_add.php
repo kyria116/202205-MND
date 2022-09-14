@@ -2,6 +2,13 @@
 include '../system/ready.mak';
 $page_name = "n_class.php";
 include '../quote/head.php';
+
+//文章總數
+$sql = "SELECT count(*) FROM [n_class]";
+$stmt = $link->prepare($sql);
+$stmt->execute();
+$data_count =  $stmt->fetchColumn();
+
 ?>
 <link rel="stylesheet" href="../css/bootstrap.min.css" />
 <link rel="stylesheet" href="../css/font-awesome.css" />
@@ -65,7 +72,7 @@ include '../quote/head.php';
 							</div>
 							<div class="widget-content nopadding">
 								<form action="../control/doadd.php?db=<?php echo $db_name; ?>" method="post" class="form-horizontal" id="form_add" name="form_add" enctype="multipart/form-data">
-									<input type="hidden" name="<?php echo $order_name; ?>" value="0" />
+									<input type="hidden" name="<?php echo $order_name; ?>" value="1" />
 									<?php foreach ($group_array as $v)	group($v[0], $v[1], $v[2], $v[3], $v[4], $v[5], $v[6]); ?>
 									<div class="form-actions">
 										<button type="button" class="btn btn-primary btn-sm" onclick="doadd();"><?php echo $cms_lang[22][$language]; ?></button>

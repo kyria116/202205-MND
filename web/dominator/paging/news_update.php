@@ -9,11 +9,10 @@ if (!isset($id) || !is_numeric($id)) {
 	exit();
 } else {
 	$page_name = "n_class.php";
-	$sql = "SELECT nc_title,nc_id FROM `news` JOIN n_class USING (nc_id) WHERE n_id = :id";
+	$sql = "SELECT nc_title,[news].nc_id FROM [news] INNER JOIN [n_class] ON [news].nc_id = [n_class].nc_id WHERE n_id = :id";
 	$stmt = $link->prepare($sql);
-	$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+	$stmt->bindParam(':id', $id, PDO::PARAM_INT);
 	$stmt->execute();
-	$row = $stmt->setFetchMode(PDO::FETCH_NUM);
 	$row = $stmt->fetch(PDO::FETCH_NUM);
 
 	$parents_id = html_decode($row[1]);
@@ -57,11 +56,11 @@ include '../quote/head.php';
 		$m_id_name = "nc_id";
 
 		//資訊
-		$query = "SELECT * FROM `$db_name` WHERE $id_name = '$id'";
+		$query = "SELECT * FROM [$db_name] WHERE $id_name = '$id'";
 		$data = sql_data($query, $link, 1);
 
 		//文章分類
-		$query = "SELECT * FROM `n_class` ORDER BY nc_order";
+		$query = "SELECT * FROM [n_class] ORDER BY nc_order";
 		$classify_ary = sql_data($query, $link, 2, "nc_id");
 
 		$link = null;

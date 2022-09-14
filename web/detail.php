@@ -8,7 +8,7 @@ if (!isset($id) || !is_numeric($id)) {
 }
 
 //內容
-$query = "SELECT nc_id,nc_title,n_title,n_keyword,DATE_FORMAT(n_date ,'%Y.%m.%d') AS n_date,n_stext,n_unit,n_name,n_area,n_suggest,n_source,n_order FROM `news` JOIN `n_class` USING(nc_id) WHERE n_id = $id";
+$query = "SELECT [news].nc_id,nc_title,n_title,n_keyword,convert(varchar(12), n_date, 102) AS n_date,n_stext,n_unit,n_name,n_area,n_suggest,n_source,n_order FROM [news] INNER JOIN [n_class] ON [news].nc_id = [n_class].nc_id WHERE n_id = $id";
 $data = sql_data($query, $link, 1);
 
 //上一則&下一則

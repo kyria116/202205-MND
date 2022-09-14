@@ -10,12 +10,10 @@ if (!isset($id) || !is_numeric($id)) {
 	$id = (int)$id;
 
 	$page_name = "n_class.php";
-	$sql = "SELECT nc_title,nc_id FROM `n_class` WHERE nc_id = :id";
+	$sql = "SELECT nc_title,nc_id FROM [n_class] WHERE nc_id = :id";
 	$stmt = $link->prepare($sql);
-	$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+	$stmt->bindParam(':id', $id, PDO::PARAM_INT);
 	$stmt->execute();
-
-	$row = $stmt->setFetchMode(PDO::FETCH_NUM);
 	$row = $stmt->fetch(PDO::FETCH_NUM);
 
 	$parents_id = html_decode($row[1]);

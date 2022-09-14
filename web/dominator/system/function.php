@@ -9,19 +9,22 @@ FALSE：回傳false。
 $project_name = "mnd"; //資料庫&使用者名稱
 function db_conn($project_name)
 {
-	$host = "localhost";	//資料庫主機位置
-	$user = $project_name;	//資料庫的使用者帳號
-	$password = "mnd";	//資料庫的使用者密碼
+	$host = "(local)";	//資料庫主機位置
+	$user = "sa";	//資料庫的使用者帳號
+	$password = "admin1234";	//資料庫的使用者密碼
 	$database = $project_name;	//資料庫名稱
 
 	//連結資料庫後告知編碼
 	try {
-		$link = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $user, $password, array(PDO::ATTR_PERSISTENT => true));
-		// set the PDO error mode to exception
+		$link = new PDO("sqlsrv:server=192.168.0.77; encrypt=true; TrustServerCertificate=true; Database = $database", $user, $password);
 		$link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$link->setAttribute(PDO::SQLSRV_ATTR_QUERY_TIMEOUT, 1);
+		// if ($link)
+		// 	echo "Connection established.\n";
 	} catch (PDOException $e) {
-		echo "Connection failed: " . $e->getMessage();
+		echo $e->getMessage();
 	}
+
 	return $link;
 }
 
@@ -35,25 +38,21 @@ FALSE：回傳false。
 */
 function sql_data($query, $link, $mode = 0, $idname = "", $classname = "")
 {
-	$sth = $link->prepare($query);
-	$link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$link->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-	$sth->execute();
-	$result = $sth->setFetchMode(PDO::FETCH_ASSOC);
+	$result = $link->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+	$result->execute();
 
 	$data = array();
-	if ($result) {
+	if ($result->rowCount() > 0) {
 		if ($mode == "0") {
 			$i = 1;
-			while ($row = $sth->fetch()) {
+			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
 				foreach ($row as $k => $v) $data[$i][$k] = html_decode($v);
 				$i++;
 			}
-		} elseif ($mode == "1") while ($row = $sth->fetch()) foreach ($row as $k => $v) $data[$k] = html_decode($v);
-		elseif ($mode == "2") while ($row = $sth->fetch()) foreach ($row as $k => $v) $data[$row[$idname]][$k] = html_decode($v);
-		elseif ($mode == "3") while ($row = $sth->fetch()) foreach ($row as $k => $v) $data[$row[$classname]][$row[$idname]][$k] = html_decode($v);
+		} elseif ($mode == "1") while ($row = $result->fetch(PDO::FETCH_ASSOC)) foreach ($row as $k => $v) $data[$k] = html_decode($v);
+		elseif ($mode == "2") while ($row = $result->fetch(PDO::FETCH_ASSOC)) foreach ($row as $k => $v) $data[$row[$idname]][$k] = html_decode($v);
+		elseif ($mode == "3") while ($row = $result->fetch(PDO::FETCH_ASSOC)) foreach ($row as $k => $v) $data[$row[$classname]][$row[$idname]][$k] = html_decode($v);
 	}
-
 	return $data;
 }
 

@@ -4,7 +4,7 @@
 【權限判斷】
 */
 if (isset($page_name)) {
-	$query = "SELECT m_main_purview,m_sub_purview FROM `menu` WHERE m_url = '$page_name'";
+	$query = "SELECT m_main_purview,m_sub_purview FROM [menu] WHERE [m_url] = '$page_name'";
 	$data = sql_data($query, $link);
 
 	if ($data) {
